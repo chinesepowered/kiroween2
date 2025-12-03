@@ -1,21 +1,30 @@
 # Implementation Plan
 
-- [-] 1. Set up Next.js project with game infrastructure
+- [x] 1. Set up Next.js project with game infrastructure
 
 
 
 
-  - [ ] 1.1 Initialize Next.js 14+ project with App Router and TypeScript
-    - Create Next.js app with `create-next-app`
+
+
+  - [x] 1.1 Initialize Next.js 14+ project with App Router and TypeScript
+
+
+    - Create Next.js app with `pnpm create next-app`
     - Configure TypeScript strict mode
     - Set up project directory structure (engine/, game/, components/, input/)
     - _Requirements: All_
-  - [ ] 1.2 Install and configure testing framework
+
+  - [x] 1.2 Install and configure testing framework
+
+
     - Install Jest, @testing-library/react, and fast-check
     - Configure Jest for TypeScript and React components
     - Create test script commands in package.json
     - _Requirements: All_
-  - [ ] 1.3 Create core type definitions and interfaces
+
+  - [x] 1.3 Create core type definitions and interfaces
+
     - Define Vector2 interface and utility functions
     - Define GameState, Player, Enemy, GameItem interfaces
     - Define LevelMap and SaveData interfaces

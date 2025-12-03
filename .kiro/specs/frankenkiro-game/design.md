@@ -582,11 +582,11 @@ Integration tests will verify:
 
 ```bash
 # Run all tests
-npm test
+pnpm test
 
 # Run property tests only
-npm test -- --testPathPattern=property
+pnpm test -- --testPathPattern=property
 
 # Run with coverage
-npm test -- --coverage
+pnpm test -- --coverage
 ```
