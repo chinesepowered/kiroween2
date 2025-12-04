@@ -11,6 +11,7 @@ import { GameCanvas } from './GameCanvas';
 import { StitchedHUD } from './StitchedHUD';
 import { GameMenu } from './GameMenu';
 import { TouchControls } from './TouchControls';
+import { WeaponSprite } from './WeaponSprite';
 import { useInputHandler } from '@/input/useInputHandler';
 import { GameLoop, createGameLoop } from '@/engine/gameLoop';
 import { GameRenderer } from '@/engine/renderer';
@@ -114,6 +115,7 @@ export const GameContainer: React.FC<GameContainerProps> = ({
   // Refs for callbacks to avoid stale closures in game loop
   const handleUpdateRef = useRef<(deltaTime: number) => void>(() => {});
   const handleRenderRef = useRef<() => void>(() => {});
+  const lastDeltaTimeRef = useRef<number>(0.016);
 
   // Input handling
   const {
@@ -184,6 +186,9 @@ export const GameContainer: React.FC<GameContainerProps> = ({
    */
   const handleUpdate = useCallback((deltaTime: number) => {
     if (gameStatusRef.current !== 'playing') return;
+    
+    // Store deltaTime for render callback
+    lastDeltaTimeRef.current = deltaTime;
 
     const inputState = getInputState();
     let currentPlayer = playerRef.current;
@@ -311,7 +316,8 @@ export const GameContainer: React.FC<GameContainerProps> = ({
       playerRef.current,
       levelMapRef.current,
       enemiesRef.current,
-      itemsRef.current
+      itemsRef.current,
+      lastDeltaTimeRef.current
     );
   }, []);
 
@@ -562,17 +568,15 @@ export const GameContainer: React.FC<GameContainerProps> = ({
         <div
           style={{
             position: 'absolute',
-            bottom: '10%',
+            bottom: '5%',
             left: '50%',
-            transform: `translateX(-50%) ${weaponAnimating ? 'translateY(-20px) scale(1.1)' : 'translateY(0) scale(1)'}`,
-            transition: 'transform 0.1s ease-out',
-            fontSize: '80px',
-            textShadow: weaponAnimating ? '0 0 30px #ff6600, 0 0 60px #ff3300' : '0 0 10px #333',
+            transform: `translateX(-50%) ${weaponAnimating ? 'translateY(-15px)' : 'translateY(0)'}`,
+            transition: 'transform 0.08s ease-out',
             pointerEvents: 'none',
             zIndex: 50,
           }}
         >
-          🔫
+          <WeaponSprite isFiring={weaponAnimating} weaponType="pistol" />
         </div>
       )}
 
