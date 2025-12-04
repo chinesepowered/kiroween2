@@ -100,7 +100,13 @@ export const GameContainer: React.FC<GameContainerProps> = ({
 
   // Refs for game systems (not React state to avoid re-renders)
   const gameLoopRef = useRef<GameLoop | null>(null);
-  const rendererRef = useRef<GameRenderer | null>(null);
+  // Create renderer immediately so it's available when canvas context is ready
+  const rendererRef = useRef<GameRenderer>(new GameRenderer({
+    screenWidth: 640,
+    screenHeight: 480,
+    fov: Math.PI / 3,
+    maxRenderDistance: 20,
+  }));
   const enemyManagerRef = useRef<EnemyManager>(createEnemyManager());
   const canvasContextRef = useRef<CanvasRenderingContext2D | null>(null);
   const attackCooldownRef = useRef<number>(0);
@@ -298,7 +304,7 @@ export const GameContainer: React.FC<GameContainerProps> = ({
    * Handle game render (called each frame)
    */
   const handleRender = useCallback(() => {
-    if (!rendererRef.current || !canvasContextRef.current) return;
+    if (!canvasContextRef.current) return;
     if (gameStatusRef.current !== 'playing') return;
 
     rendererRef.current.render(
@@ -319,17 +325,9 @@ export const GameContainer: React.FC<GameContainerProps> = ({
   }, [handleRender]);
 
   /**
-   * Initialize game loop and renderer
+   * Initialize game loop
    */
   useEffect(() => {
-    // Create renderer
-    rendererRef.current = new GameRenderer({
-      screenWidth: 640,
-      screenHeight: 480,
-      fov: Math.PI / 3,
-      maxRenderDistance: 20,
-    });
-
     // Create game loop with wrapper functions that call the refs
     gameLoopRef.current = createGameLoop({
       targetFPS: 60,
@@ -348,9 +346,7 @@ export const GameContainer: React.FC<GameContainerProps> = ({
    */
   const handleContextReady = useCallback((ctx: CanvasRenderingContext2D) => {
     canvasContextRef.current = ctx;
-    if (rendererRef.current) {
-      rendererRef.current.setContext(ctx);
-    }
+    rendererRef.current.setContext(ctx);
   }, []);
 
   /**
